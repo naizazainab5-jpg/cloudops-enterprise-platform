@@ -382,6 +382,79 @@ def home():
 }
 
 updateDeployment();
+<!-- =========================================================
+     CLOUDOPS PART 2 — AWS & DEPLOYMENT INTELLIGENCE
+     ========================================================= -->
+
+<section class="section">
+
+    <h2>AWS & Deployment Intelligence</h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>Deployment Status</h3>
+            <div id="deploy-status">Checking...</div>
+        </div>
+
+        <div class="card">
+            <h3>Application Version</h3>
+            <div id="deploy-version">--</div>
+        </div>
+
+        <div class="card">
+            <h3>Git Commit</h3>
+            <div id="deploy-commit">--</div>
+        </div>
+
+        <div class="card">
+            <h3>Environment</h3>
+            <div id="deploy-environment">--</div>
+        </div>
+
+        <div class="card">
+            <h3>Server</h3>
+            <div id="deploy-server">--</div>
+        </div>
+
+        <div class="card">
+            <h3>Platform</h3>
+            <div id="deploy-platform">--</div>
+        </div>
+
+        <div class="card">
+            <h3>CPU</h3>
+            <div id="infra-cpu">--%</div>
+        </div>
+
+        <div class="card">
+            <h3>Memory</h3>
+            <div id="infra-memory">--%</div>
+        </div>
+
+        <div class="card">
+            <h3>Disk</h3>
+            <div id="infra-disk">--%</div>
+        </div>
+
+        <div class="card">
+            <h3>Uptime</h3>
+            <div id="infra-uptime">--</div>
+        </div>
+
+        <div class="card">
+            <h3>Containerized</h3>
+            <div id="infra-container">Checking...</div>
+        </div>
+
+        <div class="card">
+            <h3>Deployed At</h3>
+            <div id="deploy-time">--</div>
+        </div>
+
+    </div>
+
+</section>
 // ============================================================
 // CLOUDOPS PART 1 — OPERATIONS DASHBOARD
 // ============================================================
@@ -479,6 +552,76 @@ updateOperations();
 
 // Refresh every 5 seconds
 setInterval(updateOperations, 5000);
+// ============================================================
+// CLOUDOPS PART 2 — AWS & DEPLOYMENT INTELLIGENCE
+// ============================================================
+
+async function updateDeploymentIntelligence() {
+    try {
+        const deploymentResponse =
+            await fetch("/api/deployment-info");
+
+        const deploymentData =
+            await deploymentResponse.json();
+
+        const d = deploymentData.deployment;
+
+        document.getElementById("deploy-status").textContent =
+            deploymentData.status === "success"
+                ? "🟢 Active"
+                : "🔴 Unavailable";
+
+        document.getElementById("deploy-version").textContent =
+            d.version;
+
+        document.getElementById("deploy-commit").textContent =
+            d.commit;
+
+        document.getElementById("deploy-environment").textContent =
+            d.environment;
+
+        document.getElementById("deploy-server").textContent =
+            d.server;
+
+        document.getElementById("deploy-platform").textContent =
+            d.platform;
+
+        document.getElementById("deploy-time").textContent =
+            d.deployed_at;
+
+        const infrastructureResponse =
+            await fetch("/api/infrastructure");
+
+        const infrastructureData =
+            await infrastructureResponse.json();
+
+        const i = infrastructureData.infrastructure;
+
+        document.getElementById("infra-cpu").textContent =
+            i.cpu_usage + "%";
+
+        document.getElementById("infra-memory").textContent =
+            i.memory_usage + "%";
+
+        document.getElementById("infra-disk").textContent =
+            i.disk_usage + "%";
+
+        document.getElementById("infra-uptime").textContent =
+            i.uptime;
+
+        document.getElementById("infra-container").textContent =
+            i.containerized ? "🟢 Yes" : "🔴 No";
+
+    } catch (error) {
+        console.error(
+            "Deployment intelligence error:",
+            error
+        );
+    }
+}
+
+updateDeploymentIntelligence();
+setInterval(updateDeploymentIntelligence, 10000);
         </script>
 
     </body>
