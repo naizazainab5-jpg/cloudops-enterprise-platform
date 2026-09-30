@@ -381,7 +381,8 @@ def home():
     }
 }
 
-updateDeployment();
+    updateDeployment();
+</script>
 <!-- =========================================================
      CLOUDOPS PART 2 — AWS & DEPLOYMENT INTELLIGENCE
      ========================================================= -->
