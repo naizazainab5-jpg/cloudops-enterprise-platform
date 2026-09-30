@@ -129,6 +129,15 @@ def version():
         "version": "1.0.0",
         "environment": "production"
     }
+@app.route("/deployment")
+def deployment():
+    return {
+        "status": "deployed",
+        "environment": "production",
+        "platform": "AWS EC2",
+        "container": "Docker",
+        "ci_cd": "GitHub Actions"
+    }
 
 
 if __name__ == "__main__":
