@@ -122,6 +122,13 @@ def health():
         "status": "healthy",
         "service": "CloudOps Enterprise Platform"
     }
+@app.route("/version")
+def version():
+    return {
+        "application": "CloudOps Enterprise Platform",
+        "version": "1.0.0",
+        "environment": "production"
+    }
 
 
 if __name__ == "__main__":
