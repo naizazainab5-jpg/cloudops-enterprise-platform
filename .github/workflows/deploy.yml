@@ -22,4 +22,14 @@ jobs:
             docker build -t cloudops-app:latest .
             docker stop cloudops-app || true
             docker rm cloudops-app || true
-            docker run -d --name cloudops-app -p 80:5000 cloudops-app:latest
+            COMMIT_ID=$(git rev-parse --short HEAD)
+            DEPLOY_TIME=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
+
+            docker run -d \
+            --name cloudops-app \
+            -p 80:5000 \
+            -e APP_VERSION="$COMMIT_ID" \
+            -e GIT_COMMIT="$COMMIT_ID" \
+            -e DEPLOYED_AT="$DEPLOY_TIME" \
+            -e APP_ENV="production" \
+            cloudops-app:latest
