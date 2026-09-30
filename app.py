@@ -1,7 +1,6 @@
 from flask import Flask
 import psutil
 import platform
-system = platform.system()
 
 app = Flask(__name__)
 
@@ -11,7 +10,8 @@ def home():
     cpu = psutil.cpu_percent(interval=1)
     memory = psutil.virtual_memory().percent
     disk = psutil.disk_usage("/").percent
-    system = psutil.sys.platform
+    system = platform.system()
+
     return """
     <!DOCTYPE html>
     <html>
@@ -87,13 +87,11 @@ def home():
 
             <div class="cards">
 
-               <div class="card">
-                <h3>📊 Monitoring</h3>
-                <p>CPU Usage: """ + str(cpu) + """%</p>
-                <p>Memory Usage: """ + str(memory) + """%</p>
-                <p>Disk Usage: """ + str(disk) + """%</p>
-                <p>System: """ + system + """</p>
-            </div>
+                <div class="card">
+                    <h3>☁️ Infrastructure</h3>
+                    <p>Provider: <strong>AWS</strong></p>
+                    <p>Status: <span class="running">Active</span></p>
+                </div>
 
                 <div class="card">
                     <h3>🚀 Deployment</h3>
@@ -103,8 +101,10 @@ def home():
 
                 <div class="card">
                     <h3>📊 Monitoring</h3>
-                    <p>Monitoring: Enabled</p>
-                    <p>Status: <span class="running">Healthy</span></p>
+                    <p>CPU Usage: """ + str(cpu) + """%</p>
+                    <p>Memory Usage: """ + str(memory) + """%</p>
+                    <p>Disk Usage: """ + str(disk) + """%</p>
+                    <p>System: """ + system + """</p>
                 </div>
 
             </div>
@@ -114,6 +114,14 @@ def home():
     </body>
     </html>
     """
+
+
+@app.route("/health")
+def health():
+    return {
+        "status": "healthy",
+        "service": "CloudOps Enterprise Platform"
+    }
 
 
 if __name__ == "__main__":
