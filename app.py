@@ -195,6 +195,7 @@ def home():
                 <div class="card">
                     <h3>Operating System</h3>
                     <div class="metric" id="system">Loading...</div>
+                    <p id="updated">Last updated: Loading...</p>
                 </div>
 
             </div>
@@ -261,6 +262,9 @@ def home():
                     document.getElementById("system").textContent =
                         data.system;
 
+                    document.getElementById("updated").textContent =
+    "Last updated: " + data.updated;
+
                 } catch (error) {
                     document.getElementById("cpu").textContent = "Unavailable";
                     document.getElementById("memory").textContent = "Unavailable";
@@ -313,7 +317,8 @@ def metrics():
         "cpu": psutil.cpu_percent(interval=0.5),
         "memory": psutil.virtual_memory().percent,
         "disk": psutil.disk_usage("/").percent,
-        "system": platform.system()
+        "system": platform.system(),
+        "updated": __import__("datetime").datetime.now().strftime("%H:%M:%S")
     })
 
 
