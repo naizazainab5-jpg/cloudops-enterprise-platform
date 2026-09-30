@@ -742,5 +742,59 @@ def application_logs():
 
 
 cloudops_logger.info("CloudOps Operations & Monitoring module initialized")
+# ============================================================
+# CLOUDOPS PART 2 — AWS & DEPLOYMENT INTELLIGENCE
+# ============================================================
+
+from datetime import datetime
+
+DEPLOYMENT_HISTORY = []
+
+
+def get_deployment_info():
+    return {
+        "version": os.getenv("APP_VERSION", "unknown"),
+        "commit": os.getenv("GIT_COMMIT", "unknown"),
+        "environment": os.getenv("APP_ENV", "development"),
+        "deployed_at": os.getenv("DEPLOYED_AT", "unknown"),
+        "server": platform.node(),
+        "platform": platform.system()
+    }
+
+
+@app.route("/api/deployment-info")
+def deployment_info():
+    return {
+        "status": "success",
+        "deployment": get_deployment_info()
+    }
+
+
+@app.route("/api/infrastructure")
+def infrastructure_status():
+    try:
+        metrics = get_system_metrics()
+
+        return {
+            "status": "healthy",
+            "infrastructure": {
+                "server": platform.node(),
+                "platform": platform.system(),
+                "cpu_usage": metrics["cpu"],
+                "memory_usage": metrics["memory"],
+                "disk_usage": metrics["disk"],
+                "uptime": format_uptime(get_uptime()),
+                "containerized": True,
+                "deployment_environment": os.getenv(
+                    "APP_ENV", "development"
+                )
+            }
+        }
+
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "error": str(e)
+        }, 500
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
